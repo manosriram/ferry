@@ -59,7 +59,8 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v3
+      # No setup-android step: ubuntu runners ship the SDK (ANDROID_HOME) with licenses accepted,
+      # and AGP downloads any missing platform or build-tools on its own.
       - uses: gradle/actions/setup-gradle@v4
       - name: Decode keystore
         env:
