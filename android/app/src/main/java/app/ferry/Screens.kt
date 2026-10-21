@@ -78,16 +78,18 @@ class MainActivity : Activity() {
 
     private fun dock() {
         val link = deepLink?.takeIf { it.scheme == "ferry" }
-        if (prefs.docked && link != null) {
-            Toast.makeText(this, "Already docked. Undock in Settings to join another fleet.", Toast.LENGTH_LONG).show()
-            deepLink = null
-            return home()
-        }
         val body = column()
         body.addView(wordmark())
         body.gap(24)
         body.addView(title("Dock with a computer"))
         body.addView(text("Open ferry on the web › Docks › Show boarding code. Scan it with your camera app, or type it here.", 15f, R.color.muted))
+        if (prefs.lostDock) {
+            body.gap(12)
+            body.addView(text("This device isn't docked anymore: it was undocked, or the server was reset. Dock it again with a new boarding code.", 14f, R.color.danger))
+        } else if (prefs.docked) {
+            body.gap(12)
+            body.addView(text("Docking here moves this device to the fleet of that code.", 14f, R.color.muted))
+        }
         body.gap(20)
         val server = field("Server, e.g. https://ferry.example.com", link?.getQueryParameter("server") ?: prefs.server)
         val code = field("Boarding code", link?.getQueryParameter("code").orEmpty(), numeric = true)
@@ -102,11 +104,16 @@ class MainActivity : Activity() {
         body.addView(button("Dock") { b ->
             b.isEnabled = false
             error.text = ""
-            bg({ api.claim(server.text.toString().trim(), code.text.toString(), name.text.toString()) }) { r ->
+            bg({
+                // A boarding code always wins: leave the current fleet first (best effort, it may already be gone).
+                if (prefs.docked) runCatching { api.undock(prefs.deviceId) }
+                api.claim(server.text.toString().trim(), code.text.toString(), name.text.toString())
+            }) { r ->
                 b.isEnabled = true
                 r.onFailure { error.text = it.message ?: "Could not reach the server" }
                 r.onSuccess {
                     deepLink = null
+                    prefs.lostDock = false
                     Sync.schedule(this)
                     if (Build.VERSION.SDK_INT >= 33) requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 0)
                     startLive()

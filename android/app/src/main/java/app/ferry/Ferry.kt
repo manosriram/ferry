@@ -39,7 +39,13 @@ class Prefs(ctx: Context) {
 
     fun landed(id: String): Uri? = sp.getString("landed_$id", null)?.let(Uri::parse)
     fun markLanded(id: String, uri: Uri) = sp.edit().putString("landed_$id", uri.toString()).apply()
-    fun clear() = sp.edit().clear().apply()
+    /** Forget the dock; settings like the save folder stay. */
+    fun clear() = sp.edit().remove("token").remove("device_id").apply()
+
+    /** Set when the server rejected our token, so the dock screen can say why it is back. */
+    var lostDock: Boolean
+        get() = sp.getBoolean("lost_dock", false)
+        set(v) = sp.edit().putBoolean("lost_dock", v).apply()
 }
 
 class ApiError(val code: Int, message: String) : Exception(message)
@@ -118,7 +124,10 @@ class Api(private val prefs: Prefs) {
     private fun read(c: HttpURLConnection): String {
         val code = c.responseCode
         val text = (if (code < 400) c.inputStream else c.errorStream)?.bufferedReader()?.use { it.readText() }.orEmpty()
-        if (code == 401 && prefs.docked) prefs.clear()
+        if (code == 401 && prefs.docked) {
+            prefs.clear()
+            prefs.lostDock = true
+        }
         if (code >= 400) throw ApiError(code, text.trim().ifEmpty { "HTTP $code" })
         return text
     }
