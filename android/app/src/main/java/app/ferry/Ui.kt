@@ -44,8 +44,8 @@ fun Context.row() = LinearLayout(this).apply {
 }
 
 fun Activity.screen(body: LinearLayout) {
-    body.fitsSystemWindows = true
-    setContentView(ScrollView(this).apply { isFillViewport = true; addView(body) })
+    // Insets go on the ScrollView: fitsSystemWindows replaces a view's own padding, so the body keeps its margins.
+    setContentView(ScrollView(this).apply { fitsSystemWindows = true; isFillViewport = true; addView(body) })
 }
 
 fun Context.text(s: String, sp: Float = 15f, color: Int = R.color.text, bold: Boolean = false) = TextView(this).apply {
