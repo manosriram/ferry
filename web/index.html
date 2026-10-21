@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ferry</title>
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>try { var t = localStorage.getItem('ferry.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<header class="bar" hidden id="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="#ferry"><img src="logo.svg" width="28" height="28" alt=""><span>ferry</span></a>
+    <nav>
+      <a href="#ferry" data-view="ferry">Ferry</a>
+      <a href="#docks" data-view="docks">Docks</a>
+    </nav>
+    <span class="me"><span class="dot ok"></span><span id="me-name">This browser</span></span>
+    <button class="secondary small-btn theme" id="theme">Auto</button>
+  </div>
+</header>
+
+<!-- First visit: start a fleet or board an existing one -->
+<main class="wrap onboard" id="view-welcome" hidden>
+  <div class="brand big"><img src="logo.svg" width="56" height="56" alt=""><span>ferry</span></div>
+  <p class="muted">Drop a file here, it lands on your phone. One-time setup.</p>
+  <button class="secondary small-btn theme" id="theme-welcome">Auto</button>
+  <label class="field">Name this browser<input id="w-name" maxlength="60"></label>
+  <div class="row-wrap">
+    <section class="card pad">
+      <h2>New here</h2>
+      <p class="muted">Start a fleet with this browser as the first dock.</p>
+      <button class="primary" id="w-create">Start a fleet</button>
+    </section>
+    <section class="card pad">
+      <h2>Already have ferry</h2>
+      <label class="field">Boarding code<input id="w-code" inputmode="numeric" placeholder="000 000" maxlength="7" class="mono"></label>
+      <button class="primary" id="w-join">Board</button>
+    </section>
+  </div>
+  <p class="error" id="w-err" role="alert"></p>
+</main>
+
+<!-- Ferry: drop files, pick destinations -->
+<main class="wrap cols" id="view-ferry" hidden>
+  <section class="main-col">
+    <label class="drop" id="drop" for="file">
+      <span class="drop-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span>
+      <span class="drop-title">Drop files to load them aboard</span>
+      <span class="muted">or <u>browse</u> · paste works too</span>
+      <input id="file" type="file" multiple class="sr-only">
+    </label>
+    <div class="card" id="cargo" hidden>
+      <div class="card-head muted"><span id="cargo-count"></span><span class="mono" id="cargo-size"></span></div>
+      <ul class="list" id="cargo-list"></ul>
+    </div>
+  </section>
+
+  <aside class="side-col">
+    <fieldset class="card">
+      <legend class="sr-only">Destinations</legend>
+      <div class="card-head"><strong>Destinations</strong><a href="#docks">+ Dock a device</a></div>
+      <div id="dest-list"></div>
+    </fieldset>
+    <button class="primary big-btn" id="send" disabled>Ferry</button>
+    <p class="error" id="send-err" role="alert"></p>
+
+    <section class="card">
+      <div class="card-head"><strong>Arrivals</strong></div>
+      <ul class="list" id="arrivals"></ul>
+    </section>
+    <section class="card">
+      <div class="card-head"><strong>Crossings</strong></div>
+      <ul class="list" id="departures"></ul>
+    </section>
+  </aside>
+</main>
+
+<!-- Docks: boarding code + device list + save location -->
+<main class="wrap cols" id="view-docks" hidden>
+  <section class="main-col card pad dock-card">
+    <div class="qr-box"><img id="qr" alt="Boarding QR code" width="206" height="206" hidden></div>
+    <div class="dock-text">
+      <h1>Dock a device</h1>
+      <p class="muted">One-time setup. After this, the device shows up as a destination every time you ferry files.</p>
+      <ol>
+        <li>Install ferry on your Android phone</li>
+        <li>Open it and tap <strong>Dock with a computer</strong></li>
+        <li>Scan this code, or type the boarding code</li>
+      </ol>
+      <div class="row-wrap center" id="code-row" hidden>
+        <span class="code mono" id="code"></span>
+        <span class="muted" id="code-ttl"></span>
+      </div>
+      <div class="row-wrap center">
+        <button class="secondary" id="new-code">Show boarding code</button>
+        <button class="link" id="copy-link" hidden>Copy boarding link</button>
+      </div>
+    </div>
+  </section>
+
+  <aside class="side-col">
+    <section class="card">
+      <div class="card-head"><strong id="docks-title">Docks</strong></div>
+      <ul class="list" id="docks"></ul>
+    </section>
+  </aside>
+</main>
+
+<template id="t-dock-me">
+  <li class="dock-me">
+    <label class="field">This browser's name<input class="me-input" maxlength="60"></label>
+    <div class="save">
+      <span class="muted small">Arrivals land in</span>
+      <div class="row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>
+        <span class="mono grow save-label"></span>
+        <button class="secondary small-btn save-change">Change</button>
+      </div>
+      <label class="check"><input type="checkbox" class="save-ask"> Ask where to save each time</label>
+      <p class="muted small save-note" hidden>This browser can't pick folders, so arrivals go to its downloads folder.</p>
+    </div>
+  </li>
+</template>
+
+</body>
+</html>

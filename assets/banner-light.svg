@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-label="ferry: drop a file, it lands on your phone">
+<rect width="1280" height="360" fill="#F4F1EA"/>
+<g transform="translate(230 70) scale(1.1)">
+<defs><clipPath id="c"><circle cx="100" cy="100" r="96"/></clipPath></defs>
+<g clip-path="url(#c)">
+<rect width="200" height="200" fill="#0F2A3D"/>
+<rect y="124" width="200" height="76" fill="#2A7F8F"/>
+<path d="M0 116 L52 116 L40 200 L0 200 Z" fill="#E9DCC3"/>
+<path d="M200 116 L148 116 L160 200 L200 200 Z" fill="#E9DCC3"/>
+<path d="M56 146 q8 -6 16 0 t16 0 t16 0 t16 0 t16 0 t16 0" fill="none" stroke="#F4F1EA" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+<path d="M60 112 L140 112 L130 132 L70 132 Z" fill="#F4F1EA"/>
+<rect x="68" y="94" width="20" height="16" rx="1.5" fill="#E8833A"/><rect x="90" y="94" width="20" height="16" rx="1.5" fill="#F4F1EA"/><rect x="112" y="94" width="20" height="16" rx="1.5" fill="#E8833A"/><rect x="79" y="76" width="20" height="16" rx="1.5" fill="#F4F1EA"/><rect x="101" y="76" width="20" height="16" rx="1.5" fill="#E8833A"/>
+</g>
+
+</g>
+<text x="530" y="196" fill="#0F2A3D" font-family="'Space Grotesk', 'Helvetica Neue', Arial, sans-serif" font-weight="700" font-size="150" letter-spacing="-6">ferry</text>
+<text x="536" y="252" fill="#4F6170" font-family="'Geist', 'Helvetica Neue', Arial, sans-serif" font-size="30">Drop a file. It lands on your phone.</text>
+<rect x="536" y="282" width="56" height="6" fill="#E8833A"/>
+</svg>

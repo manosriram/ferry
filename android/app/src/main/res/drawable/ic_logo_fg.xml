@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The ferry mark, full-bleed so the launcher mask crops it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="200" android:viewportHeight="200">
+    <path android:fillColor="#2A7F8F" android:pathData="M0,124h200v76h-200z" />
+    <path android:fillColor="#E9DCC3" android:pathData="M0,116 L52,116 L40,200 L0,200 Z" />
+    <path android:fillColor="#E9DCC3" android:pathData="M200,116 L148,116 L160,200 L200,200 Z" />
+    <path android:fillColor="#F4F1EA" android:pathData="M60,112 L140,112 L130,132 L70,132 Z" />
+    <path android:fillColor="#E8833A" android:pathData="M68,94h20v16h-20z" />
+    <path android:fillColor="#F4F1EA" android:pathData="M90,94h20v16h-20z" />
+    <path android:fillColor="#E8833A" android:pathData="M112,94h20v16h-20z" />
+    <path android:fillColor="#F4F1EA" android:pathData="M79,76h20v16h-20z" />
+    <path android:fillColor="#E8833A" android:pathData="M101,76h20v16h-20z" />
+</vector>

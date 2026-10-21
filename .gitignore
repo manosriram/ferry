@@ -1,0 +1,12 @@
+# server
+server/data/
+server/ferry
+# android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+.idea/
+*.iml
+.DS_Store
+server/webdist/
