@@ -72,9 +72,7 @@ func TestCrossing(t *testing.T) {
 		t.Fatalf("file body %q", got)
 	}
 	call("POST", "/api/crossings/"+up.ID+"/ack", b.Token, "", 204)
-	if _, err := os.Stat(s.blobPath(up.ID)); !os.IsNotExist(err) {
-		t.Fatal("blob should be deleted once every destination has it")
-	}
+	call("GET", "/api/crossings/"+up.ID+"/file", b.Token, "", 200) // still saveable until expiry
 	var out []crossingJSON
 	json.Unmarshal(call("GET", "/api/crossings?box=out", a.Token, "", 200), &out)
 	if len(out) != 1 || out[0].Targets["Pixel"] != "arrived" {
@@ -85,6 +83,9 @@ func TestCrossing(t *testing.T) {
 	json.Unmarshal(call("GET", "/api/crossings", b.Token, "", 200), &in)
 	if len(in) != 0 {
 		t.Fatalf("expired crossing still listed: %+v", in)
+	}
+	if _, err := os.Stat(s.blobPath(up.ID)); !os.IsNotExist(err) {
+		t.Fatal("blob should be deleted on expiry")
 	}
 
 	call("DELETE", "/api/docks/"+b.DeviceID, a.Token, "", 204)

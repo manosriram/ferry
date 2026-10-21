@@ -461,7 +461,7 @@ func (s *server) download(w http.ResponseWriter, r *http.Request, d device) {
 	}
 	f, err := os.Open(s.blobPath(id))
 	if err != nil {
-		http.Error(w, "this crossing has already landed everywhere or expired", http.StatusGone)
+		http.Error(w, "this crossing has expired", http.StatusGone)
 		return
 	}
 	defer f.Close()
@@ -481,11 +481,6 @@ func (s *server) ack(w http.ResponseWriter, r *http.Request, d device) {
 	if n, _ := res.RowsAffected(); n == 0 {
 		http.NotFound(w, r)
 		return
-	}
-	var pending int
-	s.db.QueryRow(`SELECT COUNT(*) FROM transfer_targets WHERE transfer_id = ? AND status = 'pending'`, id).Scan(&pending)
-	if pending == 0 {
-		os.Remove(s.blobPath(id)) // everyone has it; the row stays as history until expiry
 	}
 	var from string
 	if s.db.QueryRow(`SELECT from_device FROM transfers WHERE id = ?`, id).Scan(&from) == nil {

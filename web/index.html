@@ -71,7 +71,7 @@
     <p class="error" id="send-err" role="alert"></p>
 
     <section class="card">
-      <div class="card-head"><strong>Arrivals</strong></div>
+      <div class="card-head"><strong>Arrivals</strong><button class="link" id="arrivals-more" hidden>See all</button></div>
       <ul class="list" id="arrivals"></ul>
     </section>
     <section class="card">
@@ -111,6 +111,11 @@
     </section>
   </aside>
 </main>
+
+<dialog class="card" id="arrivals-dialog">
+  <form method="dialog" class="card-head"><strong>Arrivals · last 24h</strong><button class="icon-btn" aria-label="Close">✕</button></form>
+  <ul class="list" id="arrivals-all"></ul>
+</dialog>
 
 <template id="t-dock-me">
   <li class="dock-me">

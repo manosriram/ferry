@@ -110,3 +110,9 @@ input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); m
 .onboard { max-width: 760px; padding-block: 64px; display: flex; flex-direction: column; gap: 16px; }
 .onboard .brand { margin-bottom: 8px; }
 .onboard .theme { align-self: flex-start; }
+
+.tag { display: inline-block; background: var(--chip); color: var(--text); padding: 0 6px; font-weight: 500; }
+dialog.card { margin: auto; width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 64px); color: var(--text); display: flex; flex-direction: column; }
+dialog.card:not([open]) { display: none; }
+dialog.card .list { overflow-y: auto; }
+dialog::backdrop { background: rgb(0 0 0 / .45); }

@@ -295,16 +295,27 @@ async function send() {
 
 let arrivals = [];
 
+const ARRIVALS_SHOWN = 5;
+
+function arrivalRow(c) {
+  return h('li', {},
+    h('span', { class: 'grow' }, h('span', { class: 'name' }, c.name),
+      h('span', { class: 'sub' }, h('span', { class: 'tag' }, c.from), ` ${ago(c.created_at)} · ${size(c.size)}`)),
+    h('button', { class: 'secondary small-btn', onclick: () => land(c, true) }, c.status === 'pending' ? 'Save' : 'Save again'));
+}
+
 async function loadArrivals() {
   arrivals = await api('/api/crossings');
-  $('#arrivals').replaceChildren(...(arrivals.length ? arrivals.map((c) =>
-    h('li', {},
-      h('span', { class: 'grow' }, h('span', { class: 'name' }, c.name),
-        h('span', { class: 'sub' }, `From ${c.from} · ${ago(c.created_at)} · ${size(c.size)}`)),
-      c.status === 'pending'
-        ? h('button', { class: 'secondary small-btn', onclick: () => land(c, true) }, 'Save')
-        : h('span', { class: 'sub ok' }, 'Landed'))
-  ) : [h('li', { class: 'empty' }, 'Nothing has arrived yet.')]));
+  $('#arrivals').replaceChildren(...(arrivals.length ? arrivals.slice(0, ARRIVALS_SHOWN).map(arrivalRow)
+    : [h('li', { class: 'empty' }, 'Nothing has arrived yet.')]));
+  $('#arrivals-more').hidden = arrivals.length <= ARRIVALS_SHOWN;
+  $('#arrivals-more').textContent = `See all · ${arrivals.length}`;
+  if ($('#arrivals-dialog').open) renderAllArrivals();
+}
+
+// Arrivals expire after 24h on the server, so this is the whole last day.
+function renderAllArrivals() {
+  $('#arrivals-all').replaceChildren(...arrivals.map(arrivalRow));
 }
 
 async function loadDepartures() {
@@ -418,6 +429,7 @@ async function boot() {
   });
   $('#send').onclick = send;
   $('#new-code').onclick = newCode;
+  $('#arrivals-more').onclick = () => { renderAllArrivals(); $('#arrivals-dialog').showModal(); };
 
   listen();
 }

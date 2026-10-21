@@ -31,7 +31,7 @@
 | In port · Anchored · Away | online · Android in the background · browser tab closed |
 
 **Delivery rules**
-- Files wait on the server for up to 24h and are deleted as soon as every destination has them.
+- Files stay on the server for 24h, so you can save them again until then.
 - Android receives in the background. It's instant while the app is open, otherwise it checks every 15 min.
 - A browser receives while a ferry tab is open, even in the background.
 - Each device chooses where its arrivals land:
