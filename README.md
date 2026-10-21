@@ -39,6 +39,24 @@
 - On the web, the button in the header (and on the welcome screen) switches between **Auto → Light → Dark**.
 - On Android 12+, use Settings › Appearance.
 
+## Install
+
+The server is a single binary with the web app built in.
+
+```sh
+# Linux / macOS
+curl -fsSL https://raw.githubusercontent.com/manosriram/ferry/main/install.sh | sh
+
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/manosriram/ferry/main/install.ps1 | iex
+```
+
+The script downloads the right binary for your OS and CPU from the latest release, checks it against `SHA256SUMS`, and installs it:
+- Linux / macOS: `/usr/local/bin` (it uses sudo if needed), or `~/.local/bin` if sudo isn't available.
+- Windows: `%LOCALAPPDATA%\ferry`, which it adds to your PATH.
+
+Then run `ferry -data ~/.local/share/ferry` and open http://localhost:8080. Pin a version with `FERRY_VERSION=v0.2.0`, or pick the folder with `FERRY_BIN_DIR=…`.
+
 ## Repo
 
 ```

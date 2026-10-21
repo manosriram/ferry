@@ -87,7 +87,12 @@ func main() {
 	data := flag.String("data", "./data", "data directory (sqlite + blobs)")
 	web := flag.String("web", "../web", "web app directory to serve (ignored when the UI is bundled)")
 	maxMB := flag.Int64("max-mb", 2048, "max file size in MB")
+	showVersion := flag.Bool("version", false, "print the version and exit")
 	flag.Parse()
+	if *showVersion {
+		fmt.Println("ferry", version)
+		return
+	}
 
 	s, err := newServer(*data, *maxMB<<20)
 	if err != nil {
