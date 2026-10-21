@@ -1,12 +1,12 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
-    <img alt="ferry: drop a file, it lands on your phone" src="assets/banner-light.svg" width="100%">
+    <img alt="ferry: drop a file, it lands on your other devices" src="assets/banner-light.svg" width="100%">
   </picture>
 </p>
 
 <p align="center">
-  Move files between your browser and your Android phone with no cables, accounts or email-to-self.<br>
+  Move files between any of your devices with no cables, accounts or email-to-self.<br>
   Dock each device once, then drop a file and pick where it goes.
 </p>
 
@@ -15,7 +15,11 @@
 ## How it works
 
 1. **Start a fleet.** Open ferry in a browser. That browser becomes your first dock.
-2. **Dock your phone.** On the web, open **Docks › Show boarding code**, then scan the QR with your phone's camera or type the 6-digit code into the app. You only do this once per device.
+2. **Dock your other devices.** On a docked browser, open **Docks › Show boarding code**.
+   - Another browser joins with the 6-digit code or the boarding link.
+   - The Android app joins by scanning the QR with the camera, or by typing the code.
+
+   You only do this once per device.
 3. **Ferry files.** Drop files on the web page, or use **Share › ferry** on Android, then tick the destinations.
 
 | Word | Meaning |
