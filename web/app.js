@@ -64,9 +64,9 @@ function deviceIcon(platform) {
   return h('span', { class: 'muted device-icon', 'aria-hidden': 'true' }, svg);
 }
 
-// ---------- theme: Auto (system) → Light → Dark ----------
+// ---------- theme: click cycles through them ----------
 
-const THEMES = { system: 'Auto', light: 'Light', dark: 'Dark' };
+const THEMES = { system: 'Auto', light: 'Light', dark: 'Dark', dawn: 'Harbor dawn', sea: 'Open sea', lighthouse: 'Lighthouse', fog: 'Fog', night: 'Night crossing', ferry: 'Golden crossing' };
 function applyTheme(t) {
   if (t === 'system') delete document.documentElement.dataset.theme;
   else document.documentElement.dataset.theme = t;
@@ -82,7 +82,7 @@ function cycleTheme() {
   applyTheme(next);
 }
 document.querySelectorAll('.theme').forEach((b) => { b.onclick = cycleTheme; });
-applyTheme(store.get('theme') || 'system');
+applyTheme(THEMES[store.get('theme')] ? store.get('theme') : 'system');
 
 // ---------- onboarding ----------
 
