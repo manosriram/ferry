@@ -80,6 +80,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .secondary { background: var(--surface); color: var(--text); border-color: var(--control); }
 .small-btn { min-height: 40px; padding: 0 12px; font-size: 13px; }
 .link { background: none; color: var(--ink); text-decoration: underline; padding: 0 4px; }
+.device-icon { display: flex; flex: none; }
 .icon-btn { background: none; color: var(--muted); width: 44px; padding: 0; display: flex; align-items: center; justify-content: center; }
 .danger { color: var(--danger); }
 

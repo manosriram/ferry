@@ -45,7 +45,24 @@ function status(d) {
   if (d.platform === 'android') return h('span', { class: 'sub' }, `Anchored · seen ${ago(d.last_seen)} · picks it up on next check`);
   return h('span', { class: 'sub' }, `Away · seen ${ago(d.last_seen)} · waits up to 24h`);
 }
-const deviceIcon = (platform) => h('span', { class: 'muted', 'aria-hidden': 'true' }, platform === 'android' ? '▯' : '▭');
+// Phone / laptop outlines in the same stroke style as the icons in index.html; SVG
+// rather than ▯ ▭ because many system fonts have no glyph for those.
+const ICONS = {
+  phone: ['M7 3h10a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z', 'M11 18h2'],
+  laptop: ['M5 5h14a1 1 0 0 1 1 1v9H4V6a1 1 0 0 1 1-1z', 'M2 18h20'],
+};
+function deviceIcon(platform) {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  for (const [k, v] of Object.entries({ width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor',
+    'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' })) svg.setAttribute(k, v);
+  for (const d of ICONS[platform === 'android' ? 'phone' : 'laptop']) {
+    const p = document.createElementNS(ns, 'path');
+    p.setAttribute('d', d);
+    svg.append(p);
+  }
+  return h('span', { class: 'muted device-icon', 'aria-hidden': 'true' }, svg);
+}
 
 // ---------- theme: Auto (system) → Light → Dark ----------
 
