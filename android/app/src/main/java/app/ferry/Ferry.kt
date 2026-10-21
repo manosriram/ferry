@@ -155,6 +155,15 @@ object Harbor {
         return doc.substringAfter(':').ifEmpty { doc }
     }
 
+    /** Downloads an arrival, saves it and acks it. */
+    fun land(ctx: Context, prefs: Prefs, api: Api, c: Crossing): Uri {
+        val conn = api.download(c.id)
+        val uri = try { conn.inputStream.use { save(ctx, prefs, c.name, it) } } finally { conn.disconnect() }
+        prefs.markLanded(c.id, uri)
+        api.ack(c.id)
+        return uri
+    }
+
     fun save(ctx: Context, prefs: Prefs, name: String, input: InputStream): Uri {
         val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(name.substringAfterLast('.', "").lowercase())
             ?: "application/octet-stream"

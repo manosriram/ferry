@@ -173,7 +173,13 @@ class MainActivity : Activity() {
                     val landed = prefs.landed(c.id)
                     item(c.name, "From ${c.from} · ${ago(c.createdAt)} · ${size(c.size)}",
                         trailing = if (landed != null) button("Open", primary = false) { open(landed) }
-                        else text(if (c.status == "pending") "Crossing…" else "Landed elsewhere", 12f, R.color.muted))
+                        else button(if (c.status == "pending") "Save" else "Save again", primary = false) { b ->
+                            b.isEnabled = false
+                            bg({ Harbor.land(this, prefs, api, c) }) { r ->
+                                r.onFailure { Toast.makeText(this, "${c.name}: ${it.message}", Toast.LENGTH_LONG).show() }
+                                load()
+                            }
+                        })
                 })
             }
         }

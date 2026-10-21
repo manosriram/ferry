@@ -35,7 +35,8 @@ object Sync {
     }
 
     fun now(ctx: Context) {
-        WorkManager.getInstance(ctx).enqueueUniqueWork("arrivals-now", ExistingWorkPolicy.KEEP,
+        // APPEND_OR_REPLACE: a new arrival always gets a run, even if an earlier one is mid-run or stuck in backoff.
+        WorkManager.getInstance(ctx).enqueueUniqueWork("arrivals-now", ExistingWorkPolicy.APPEND_OR_REPLACE,
             OneTimeWorkRequestBuilder<ArrivalsWorker>().setConstraints(online)
                 .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST).build())
     }
@@ -58,21 +59,26 @@ class ArrivalsWorker(ctx: Context, params: WorkerParameters) : CoroutineWorker(c
         val prefs = Prefs(applicationContext)
         if (!prefs.docked) return Result.success()
         val api = Api(prefs)
-        return try {
-            for (c in api.crossings(out = false).filter { it.status == "pending" }) {
-                val conn = api.download(c.id)
-                val uri = conn.inputStream.use { Harbor.save(applicationContext, prefs, c.name, it) }
-                conn.disconnect()
-                prefs.markLanded(c.id, uri)
-                api.ack(c.id)
-                notifyLanded(applicationContext, c, uri, Harbor.label(prefs))
-            }
-            Result.success()
+        val pending = try {
+            api.crossings(out = false).filter { it.status == "pending" }
         } catch (e: ApiError) {
-            if (e.code == 401 || e.code == 410) Result.success() else Result.retry()
+            return if (e.code == 401) Result.success() else Result.retry()
         } catch (e: Exception) {
-            Result.retry()
+            return Result.retry()
         }
+        // One bad arrival must not hold back the rest: try each, retry later only for the ones that can still land.
+        var retry = false
+        for (c in pending) {
+            try {
+                notifyLanded(applicationContext, c, Harbor.land(applicationContext, prefs, api, c), Harbor.label(prefs))
+            } catch (e: ApiError) {
+                if (e.code == 401) return Result.success()
+                if (e.code >= 500) retry = true // 404/410: gone from the server, nothing to retry
+            } catch (e: Exception) {
+                retry = true
+            }
+        }
+        return if (retry) Result.retry() else Result.success()
     }
 
     override suspend fun getForegroundInfo() = foregroundInfo(applicationContext, "Bringing files ashore")
